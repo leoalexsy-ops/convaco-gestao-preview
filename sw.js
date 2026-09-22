@@ -1,12 +1,12 @@
 const CACHE_NAME = "convaco-v3";
 const ASSETS_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/Logotipo sem fundo colorida.png",
-  "/Logotipo sem fundo BCO.png",
-  "/icon-192.png",
-  "/icon-512.png"
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./Logotipo sem fundo colorida.png",
+  "./Logotipo sem fundo BCO.png",
+  "./icon-192.png",
+  "./icon-512.png"
 ];
 
 // Install Event - cache core shell
@@ -66,7 +66,7 @@ self.addEventListener("fetch", (event) => {
           }
           // If the resource is not in cache, fallback to index.html for SPA routes
           if (event.request.headers.get("accept")?.includes("text/html")) {
-            return caches.match("/");
+            return caches.match(self.registration.scope);
           }
         });
       })
@@ -86,11 +86,11 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.body,
-    icon: "/icon-192.png",
-    badge: "/icon-192.png",
+    icon: "icon-192.png",
+    badge: "icon-192.png",
     vibrate: [200, 100, 200],
     data: {
-      url: data.url || "/"
+      url: data.url || self.registration.scope
     },
     tag: "programming-alert",
     renotify: true
@@ -104,7 +104,7 @@ self.addEventListener("push", (event) => {
 // Notification Click Event - open or focus application on click
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const urlToOpen = new URL(event.notification.data?.url || "/", self.location.origin).href;
+  const urlToOpen = new URL(event.notification.data?.url || self.registration.scope, self.location.origin).href;
 
   event.waitUntil(
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windowClients) => {
